@@ -15,9 +15,11 @@ except ImportError:
 FAMILY_CODE_EXTENSIONS = {
     "FAM0201": ["igs", "stp"],      # Laser tube inf 5850 mm
     "FAM0202": ["igs", "stp"],      # Laser tube sup 5850 mm
-    "FAM0203": ["dxf"],              # Tole inf 3000 mm
-    "FAM0204": ["dxf"],              # Tole sup 3000 mm  
-    "FAM0208": ["step"],             # Other files
+    "FAM0203": ["dxf"],             # Tole inf 3000 mm
+    "FAM0204": ["dxf"],             # Tole sup 3000 mm
+    "FAM0206": ["step"],            # Tole pliée
+    "FAM0207": ["step"],            # Tole pliée
+    "FAM0208": ["step"],            # Tole pliée 
 }
 
 # Base extensions required for all files
