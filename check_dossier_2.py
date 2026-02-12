@@ -13,8 +13,10 @@ except ImportError:
 
 # Family code to extensions mapping - easy to modify
 FAMILY_CODE_EXTENSIONS = {
-    "FAM0201": ["igs", "step"],      # Laser tube files
-    "FAM0203": ["dxf"],              # Sheet metal files  
+    "FAM0201": ["igs", "stp"],      # Laser tube inf 5850 mm
+    "FAM0202": ["igs", "stp"],      # Laser tube sup 5850 mm
+    "FAM0203": ["dxf"],              # Tole inf 3000 mm
+    "FAM0204": ["dxf"],              # Tole sup 3000 mm  
     "FAM0208": ["step"],             # Other files
 }
 
@@ -71,6 +73,10 @@ def load_extensions_from_excel(excel_path, folder_path=None):
                 filename = str(row[0]).strip()
                 family_code = str(row[2]).strip().upper()
                 file_path = str(row[3]).strip() if len(row) >= 4 and row[3] else ""
+                
+                # Skip files with N/A as family code
+                if family_code == "N/A":
+                    continue
                 
                 # Only check files that are in the specified folder
                 if folder_path and file_path:
@@ -137,11 +143,15 @@ def check_folder(folder_path, text_widget, status_label, excel_path=None):
             file_extensions_map = {
                 "Piece_1": ["slddrw", "pdf", "igs", "step"],  # Example for FAM0201
                 "Piece_2": ["slddrw", "pdf", "dxf"],       # Example for FAM0203
+                "ENS-BOR-HUL-120-120-A": ["slddrw", "pdf"],  # Default rules for these files
+                "ENS-EMB-BOR-HUL-120-A": ["slddrw", "pdf"],
+                "ENS-TET-HUL-120-A": ["slddrw", "pdf"],
             }
 
-    # Get all files in the folder (case-insensitive)
-    files = [f.lower() for f in os.listdir(folder_path)]
-    files_original = os.listdir(folder_path)
+    # Get all files in the folder (case-insensitive), skipping folders and Excel temporary files
+    files_original = [f for f in os.listdir(folder_path) 
+                     if os.path.isfile(os.path.join(folder_path, f)) and not f.startswith('~$')]
+    files = [f.lower() for f in files_original]
 
     # Track which files were checked
     checked_files = set()
@@ -159,7 +169,7 @@ def check_folder(folder_path, text_widget, status_label, excel_path=None):
         
         if missing_exts:
             report["fichiers_manquants"].append(
-                f"{filename} (manque: {', '.join(missing_exts)})"
+                f"{filename} (manque : {', '.join(missing_exts)})"
             )
         else:
             # Mark this file as checked
@@ -200,9 +210,11 @@ def check_folder(folder_path, text_widget, status_label, excel_path=None):
     all_files_lower = [f.lower() for f in files_original]
     for file in files_original:
         if file.lower() not in checked_files:
-            # Skip Excel files, common non-design files, and SLDPRT files (these are the source files being verified)
+            # Skip Excel files, common non-design files, and SLDPRT/SLDASM/SLDDRW files (these are the source files being verified)
             file_upper = file.upper()
             if (not file_upper.endswith('.SLDPRT') and 
+                not file_upper.endswith('.SLDASM') and 
+                not file_upper.endswith('.SLDDRW') and
                 not any(file_upper.endswith(ext) for ext in ['.XLSX', '.XLS', '.CSV', '.BAT', '.ICO', '.REG'])):
                 report["fichiers_non_verifies"].append(file)
 
