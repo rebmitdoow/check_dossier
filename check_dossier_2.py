@@ -17,9 +17,9 @@ FAMILY_CODE_EXTENSIONS = {
     "FAM0202": ["igs", "stp"],      # Laser tube sup 5850 mm
     "FAM0203": ["dxf"],             # Tole inf 3000 mm
     "FAM0204": ["dxf"],             # Tole sup 3000 mm
-    "FAM0206": ["step"],            # Tole pliée
-    "FAM0207": ["step"],            # Tole pliée
-    "FAM0208": ["step"],            # Tole pliée 
+    "FAM0206": ["step"],            # Tole pliée gde long
+    "FAM0207": ["step"],            # Tole pliée spé
+    "FAM0208": ["step"],            # Tole pliée
 }
 
 # Base extensions required for all files
